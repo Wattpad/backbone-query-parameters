@@ -6,6 +6,7 @@ var splatParam    = /\*([\w\d]+)/g;
 var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
 var queryStrip = /(\?.*)$/;
 var fragmentStrip = /^([^\?]*)/;
+var hasQueryString = /(\?)[\w-]+=/i;
 Backbone.Router.arrayValueSplit = '|';
 
 var _getFragment = Backbone.History.prototype.getFragment;
@@ -15,6 +16,8 @@ _.extend(Backbone.History.prototype, {
     fragment = _getFragment.apply(this, arguments);
     if (excludeQueryString) {
       fragment = fragment.replace(queryStrip, '');
+    } else if (! hasQueryString.test(fragment)) {
+      fragment += this.location.search;
     }
     return fragment;
   },
